@@ -1,11 +1,31 @@
 import { StyleSheet } from "react-native";
 
+export const colors = {
+  primary: "#2f87e6ff",
+  secondary: "#6c757d",
+  success: "#28a745",
+  backgroundColor: "#3673afff",
+}
+
+
 export default StyleSheet.create({
+
   container: {
     flex: 1,
     justifyContent: "center",
     padding: 24,
     backgroundColor: "#fff",
+  },
+  card: {
+    backgroundColor: "#f8f9fa",
+    padding: 16,
+    paddingBottom: 32,
+    paddingTop: 32,
+    width: 350,
+    borderRadius: 8,
+    marginTop: 32,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   title: {
     fontSize: 28,
@@ -13,6 +33,7 @@ export default StyleSheet.create({
     marginBottom: 30,
     textAlign: "center",
   },
+  
   input: {
     borderWidth: 1,
     borderColor: "#ccc",

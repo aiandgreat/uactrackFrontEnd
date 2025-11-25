@@ -11,6 +11,7 @@ export default function LoginPage({ navigation }) {
     alert(`Email: ${email}\nPassword: ${password}\nRemember Me: ${rememberMe}`);
   };
 
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
