@@ -14,7 +14,7 @@ export default function NavBar(props) {
     return (
         <View style={stylesNav.navBar}>
             <Text>{props.text}</Text>
-            <View>MENU</View>
+            <View><Text>MENU</Text></View>
         </View>
     )
 }
