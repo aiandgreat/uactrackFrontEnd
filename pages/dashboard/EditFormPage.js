@@ -19,8 +19,6 @@ export default function DashboardPage({ navigation, route }) {
 
   const office = localStorage.getItem("office");
 
-  const authToken = localStorage.getItem("authToken");
-
   const [fileName, setFileName] = useState("");
 
   const [editData, setEditData] = useState({
@@ -63,12 +61,6 @@ export default function DashboardPage({ navigation, route }) {
       const response = await axios.put(
         `http://127.0.0.1:8000/api/Events/${routeData.id}/`,
         formData
-        // {
-        //   headers: {
-        //     "Content-Type": "multipart/form-data",
-        //     Authorization: `${authToken}`,
-        //   },
-        // }
       );
 
       console.log(response.data);

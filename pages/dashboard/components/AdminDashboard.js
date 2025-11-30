@@ -18,34 +18,34 @@ import { Picker, selectedValue } from "react-native-web";
 export default function AdminDashboardPage({ navigation }) {
   const [data, setData] = useState({ data: [] });
   const [orgList, setOrgList] = useState({ data: [] });
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/list_Events/"
-        );
-        setData({ data: response.data });
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, []);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/list_Organizations/"
-        );
-        setOrgList({ data: response.data });
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "http://127.0.0.1:8000/api/list_Events/"
+  //       );
+  //       setData({ data: response.data });
+  //       console.log(data);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+  // useEffect(() => {
+  //   const fetchOrg = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "http://127.0.0.1:8000/api/list_Organizations/"
+  //       );
+  //       setOrgList({ data: response.data });
+  //       console.log(data);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+  //   fetchOrg();
+  // }, []);
 
   return (
     <View>
