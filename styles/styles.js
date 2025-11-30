@@ -24,6 +24,15 @@ export default StyleSheet.create({
     borderRadius: 6,
     fontSize: 16,
   },
+
+errorMessage: {
+  color: 'red',
+  marginTop: 10,
+  textAlign: 'center',
+  fontWeight: 'bold',
+},
+
+
   checkboxContainer: {
     backgroundColor: "transparent",
     borderWidth: 0,

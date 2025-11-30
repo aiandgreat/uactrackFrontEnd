@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet, Pressable, TouchableOpacity } from "react-native";
 import { useState } from "react";
+// 👈 ADDED: Import AsyncStorage for persistent storage in React Native
+import AsyncStorage from "@react-native-async-storage/async-storage"; 
 import { colors } from "../../styles/colors";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -47,10 +49,35 @@ export default function NavBar({ navigation }) {
     }
   };
 
-  const handleLogout = () => {
-    setIsMenuOpen(false); // Close menu
-    console.log("Logging out...");
-    // TODO: Add actual logout logic (clear tokens, navigate to Login screen)
+  // 🚀 MODIFIED: Logout function now clears AsyncStorage and resets navigation
+  const handleLogout = async () => {
+    setIsMenuOpen(false); // Close menu immediately
+    
+    try {
+      // Clear all stored user data
+      await AsyncStorage.removeItem('authToken');
+      await AsyncStorage.removeItem('role');
+      await AsyncStorage.removeItem('user_id');
+      await AsyncStorage.removeItem('email');
+      await AsyncStorage.removeItem('name');
+      await AsyncStorage.removeItem('organization');
+      await AsyncStorage.removeItem('isRemembered');
+
+      console.log('Logout successful: Token and user data cleared.');
+
+      // Navigate to the Login screen and clear the navigation history
+      if (navigation) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
+      }
+      
+    } catch (e) {
+      console.error('Logout Failed: Error removing token from storage.', e);
+      // Fallback navigation in case storage clearing fails
+      navigation.navigate("Login"); 
+    }
   };
 
   return (
