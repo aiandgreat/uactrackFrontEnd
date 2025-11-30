@@ -17,6 +17,7 @@ import { Picker, selectedValue } from "react-native-web";
 
 export default function AdminDashboardPage({ navigation }) {
   const [data, setData] = useState({ data: [] });
+  const [orgList, setOrgList] = useState({ data: [] });
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,6 +32,20 @@ export default function AdminDashboardPage({ navigation }) {
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/list_Organizations/"
+        );
+        setOrgList({ data: response.data });
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <View>
@@ -38,10 +53,10 @@ export default function AdminDashboardPage({ navigation }) {
         selectedValue={selectedValue}
         onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
       >
-        <Picker.Item label="Option 1" value="value1" />
-        <Picker.Item label="Option 2" value="value2" />
-        <Picker.Item label="Option 3" value="value3" />
+        <Picker.Item label="Date" value="Date" />
+        <Picker.Item label="Org" value="Organization" />
       </Picker>
+
       {data.data.map((item) => {
         console.log(item.id);
         let statusOverall =
