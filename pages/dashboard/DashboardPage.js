@@ -22,36 +22,7 @@ import { colors } from "../../styles/colors"; // Moved the colors import up
 export default function DashboardPage({ navigation }) {
   // sample user role logic
   const role = localStorage.getItem("role");
-  const organization = localStorage.getItem("organization");
   const name = localStorage.getItem("name");
-
-  console.log("Role in Dashboard:", role);
-  let text = "";
-  if (role !== "student") {
-    text = "Admin Dashboard";
-  } else {
-    text = "Student Dashboard";
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/list_Events/"
-        );
-        if (role === "student") {
-          const filteredData = response.data.filter(
-            (item) => item.organization === organization
-          );
-          setFilteredResponse({ data: filteredData });
-          console.log(filteredData);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, []);
 
   return (
     <View style={styles.container}>
