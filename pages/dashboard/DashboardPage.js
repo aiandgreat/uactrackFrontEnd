@@ -13,6 +13,7 @@ import axios from "axios";
 
 import StudentDashboardPage from "./components/StudentDashboard";
 import AdminDashboardPage from "./components/AdminDashboard";
+import { colors } from "../../styles/colors"; // Moved the colors import up
 
 export default function DashboardPage({ navigation }) {
   // sample user role logic
@@ -28,6 +29,7 @@ export default function DashboardPage({ navigation }) {
   } else {
     text = "Student Dashboard";
   }
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -50,12 +52,19 @@ export default function DashboardPage({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <NavBar text={text} />
+      {/* 🚨 FIX: Wrap NavBar in a View with high zIndex and position: 'relative' */}
+      <View style={styles.navContainer}>
+        {/* You need to pass navigation to NavBar for the menu items to work */}
+        <NavBar navigation={navigation} text={text} /> 
+      </View>
+
+      {/* The welcome message View should not have a high zIndex */}
       <View style={{ margin: 24 }}>
         <Text style={[styles.text, { color: colors.primary }]}>
           Welcome, {name}
         </Text>
       </View>
+      
       {role === "admin" ? (
         <AdminDashboardPage navigation={navigation} />
       ) : (
@@ -65,15 +74,21 @@ export default function DashboardPage({ navigation }) {
   );
 }
 
-import { colors } from "../../styles/colors";
-
 const styles = StyleSheet.create({
   container: {
-    height: "100vh",
+    // Changing '100vh' to '100%' for better cross-platform support
+    height: "100%", 
+    flex: 1, // Add flex: 1 for RN best practices
     backgroundColor: colors.surface,
+  },
+  // 🚨 NEW STYLE RULE FOR Z-INDEX FIX 🚨
+  navContainer: {
+    // This is the key: establishes a stacking context with high priority
+    position: 'relative', // CRITICAL for RN Web to activate zIndex properly
+    zIndex: 1000, 
   },
   text: {
     fontSize: 24,
-    fontWeight: 600,
+    fontWeight: "600",
   },
 });
