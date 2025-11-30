@@ -13,7 +13,7 @@ import { colors } from "../../../styles/colors";
 
 // COMPONENTS
 
-import { Card } from "../components/Card";
+import Card from "./Card";
 
 export default function StudentDashboardPage({ navigation }) {
   // sample user role logic

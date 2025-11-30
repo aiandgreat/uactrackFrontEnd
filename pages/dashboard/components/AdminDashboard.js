@@ -13,6 +13,7 @@ import axios from "axios";
 import { colors } from "../../../styles/colors";
 
 import Card from "./Card";
+import { Picker, selectedValue } from "react-native-web";
 
 export default function AdminDashboardPage({ navigation }) {
   const [data, setData] = useState({ data: [] });
@@ -33,6 +34,14 @@ export default function AdminDashboardPage({ navigation }) {
 
   return (
     <View>
+      <Picker
+        selectedValue={selectedValue}
+        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+      >
+        <Picker.Item label="Option 1" value="value1" />
+        <Picker.Item label="Option 2" value="value2" />
+        <Picker.Item label="Option 3" value="value3" />
+      </Picker>
       {data.data.map((item) => {
         console.log(item.id);
         let statusOverall =

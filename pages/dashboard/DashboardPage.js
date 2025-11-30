@@ -29,7 +29,7 @@ export default function DashboardPage({ navigation }) {
       {/* 🚨 FIX: Wrap NavBar in a View with high zIndex and position: 'relative' */}
       <View style={styles.navContainer}>
         {/* You need to pass navigation to NavBar for the menu items to work */}
-        <NavBar navigation={navigation} text={text} />
+        <NavBar navigation={navigation} />
       </View>
 
       {/* The welcome message View should not have a high zIndex */}
