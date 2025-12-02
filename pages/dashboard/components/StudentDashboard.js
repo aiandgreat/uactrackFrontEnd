@@ -17,16 +17,6 @@ import { colors } from "../../../styles/colors";
 import Card from "./Card";
 
 export default function StudentDashboardPage({ navigation }) {
-  const [organization, setOrganization] = useState("");
-
-  useEffect(() => {
-    const fetchOrganization = async () => {
-      const org = await AsyncStorage.getItem("organization");
-      setOrganization(org);
-    };
-    fetchOrganization();
-  }, []);
-
   const [filteredResponse, setFilteredResponse] = useState({ data: [] });
 
   useEffect(() => {
@@ -35,8 +25,10 @@ export default function StudentDashboardPage({ navigation }) {
         const response = await axios.get(
           "http://127.0.0.1:8000/api/list_Events/"
         );
+        const org = await AsyncStorage.getItem("organization");
+
         const filteredData = response.data.filter(
-          (item) => item.organization === organization
+          (item) => item.organization === org
         );
         setFilteredResponse({ data: filteredData });
 
