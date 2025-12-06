@@ -6,10 +6,25 @@ import {
   TextInput,
   StyleSheet,
   Platform,
+  Modal,
+  Pressable,
+  TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
+
+// --- GLASS THEME COLORS ---
+const GLASS_THEME = {
+  glassSurface: "rgba(255, 255, 255, 0.85)", // More opaque for readability
+  glassText: "#001e66", // Dark text on light glass
+  glassBorder: "rgba(0, 30, 102, 0.3)", // Dark blue border
+  darkBlue: "#005BCC",
+  lightBlue: "#007AFF",
+  white: "#FFFFFF",
+  softGray: "#E0E5F2",
+};
 
 export default function AddForm({ navigation }) {
   const [org, setOrg] = useState("");
@@ -143,10 +158,12 @@ export default function AddForm({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{}}>
-        <Text style={{}}>Submit A Form:</Text>
-      </View>
+    <ScrollView style={styles.scrollContainer}>
+      <View style={styles.container}>
+      <View>
+  <Text style={styles.headingOne}>Submit A Form</Text>
+</View>
+
 
       {/* Organization selection for admin */}
       {role === "admin" ? (
@@ -214,9 +231,7 @@ export default function AddForm({ navigation }) {
       <View style={styles.filePickerSection}>
         {Platform.OS === "web" ? (
           <View style={styles.webFileInputContainer}>
-            <Text style={{ marginBottom: 5, fontWeight: "bold" }}>
-              Attach Document:
-            </Text>
+           <Text style={styles.statusLabel}>Attach Document:</Text>
             <input
               type="file"
               onChange={handleWebFileChange}
@@ -348,77 +363,218 @@ export default function AddForm({ navigation }) {
 
       {/* Submit Button Section */}
       <View style={styles.submitButtonContainer}>
-        <Button title="Submit Form" onPress={handleSubmit} />
-        <Button title="Go Back" onPress={() => navigation.goBack()} />
+        <TouchableOpacity
+          style={[styles.button, styles.primaryButton]}
+          onPress={handleSubmit}
+        >
+          <Text style={[styles.buttonText, { color: GLASS_THEME.white }]}>Submit Form</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.yellowButton]}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.buttonText}>Go Back</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    backgroundColor: GLASS_THEME.softGray,
+  },
   container: {
-    padding: 20,
+    minHeight: "100vh",
+    backgroundColor: GLASS_THEME.softGray,
+    padding: Platform.OS === "web" ? 40 : 20,
+    paddingBottom: 60,
   },
   input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-  dropdownContainer: {
-    marginBottom: 10,
-  },
-  dropdownLabel: {
-    marginBottom: 5,
-    fontWeight: "bold",
-    fontSize: 14,
-  },
-  webSelect: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    width: "100%",
-    backgroundColor: "white",
-    appearance: "none",
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+    marginVertical: 10,
+    padding: 14,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    backgroundColor: GLASS_THEME.glassSurface,
+    color: GLASS_THEME.glassText,
     fontSize: 16,
+    fontWeight: "500",
+    ...(Platform.OS === "web" && { backdropFilter: "blur(5px)" }),
   },
   datePickerContainer: {
-    marginBottom: 10,
+    marginVertical: 12,
+    padding: 16,
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+    borderRadius: 12,
+    backgroundColor: GLASS_THEME.glassSurface,
+    ...(Platform.OS === "web" && { backdropFilter: "blur(5px)" }),
   },
   datePickerLabel: {
-    marginBottom: 5,
-    fontWeight: "bold",
-    fontSize: 14,
+    marginBottom: 10,
+    fontWeight: "700",
+    color: GLASS_THEME.glassText,
+    fontSize: 16,
+    letterSpacing: 0.3,
   },
   webDateInput: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    width: "100%",
-    backgroundColor: "white",
+    padding: 12,
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+    borderRadius: 10,
+    backgroundColor: GLASS_THEME.white,
+    color: GLASS_THEME.glassText,
     fontSize: 16,
+    fontWeight: "500",
   },
   filePickerSection: {
-    marginTop: 10,
+    marginVertical: 20,
+    padding: 16,
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+    borderRadius: 12,
+    backgroundColor: GLASS_THEME.glassSurface,
+    ...(Platform.OS === "web" && { backdropFilter: "blur(5px)" }),
+  },
+  fileNameText: {
+    marginTop: 12,
+    color: GLASS_THEME.glassText,
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  statusLabel: {
+    fontWeight: "700",
+    marginTop: 20,
     marginBottom: 10,
-    padding: 5,
-    borderWidth: 1,
-    borderColor: "#eee",
+    color: GLASS_THEME.glassText,
+    fontSize: 16,
+    letterSpacing: 0.3,
+  },
+  selectInput: {
+    padding: 14,
+    paddingHorizontal: 16,
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+    borderRadius: 12,
+    backgroundColor: GLASS_THEME.glassSurface,
+    color: GLASS_THEME.glassText,
+    fontSize: 16,
+    fontWeight: "500",
+    marginBottom: 10,
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+  },
+  webSelect: {
+    padding: 14,
+    paddingHorizontal: 16,
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+    borderRadius: 12,
+    backgroundColor: GLASS_THEME.white,
+    color: GLASS_THEME.glassText,
+    fontSize: 16,
+    fontWeight: "500",
+    width: "100%",
   },
   webFileInputContainer: {
     height: 50,
     justifyContent: "center",
   },
-  fileNameText: {
-    marginTop: 5,
-    fontSize: 12,
-    color: "#555",
+  buttonContainer: {
+    marginVertical: 10,
+    flexDirection: "row",
+    gap: 10,
   },
   submitButtonContainer: {
-    marginTop: 20,
+    marginVertical: 20,
+    marginBottom: 40,
+    flexDirection: "row",
+    gap: 12,
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#001e66",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  primaryButton: {
+    backgroundColor: GLASS_THEME.lightBlue,
+    borderWidth: 0,
+  },
+  secondaryButton: {
+    backgroundColor: GLASS_THEME.glassSurface,
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+  },
+  yellowButton: {
+    backgroundColor: "#ffd800",
+    borderWidth: 0,
+  },
+  deleteButton: {
+    backgroundColor: "#cf1a24",
+    borderWidth: 0,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+    color: GLASS_THEME.glassText,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: GLASS_THEME.glassSurface,
+    padding: 24,
+    borderRadius: 20,
+    width: "80%",
+    maxWidth: 400,
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+    ...(Platform.OS === "web" && { backdropFilter: "blur(10px)" }),
+    shadowColor: GLASS_THEME.darkBlue,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 15,
+    textAlign: "center",
+    color: GLASS_THEME.glassText,
+  },
+  modalButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 10,
+    backgroundColor: GLASS_THEME.lightBlue,
+    marginTop: 10,
+    shadowColor: GLASS_THEME.lightBlue,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  modalButtonText: {
+    color: GLASS_THEME.white,
+    fontWeight: "600",
+    fontSize: 16,
   },
   errorText: {
     color: "red",
@@ -426,4 +582,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: "center",
   },
+
+  headingOne: {
+  fontSize: 32,
+  fontWeight: "900",
+  color: GLASS_THEME.glassText,
+  marginBottom: 20,
+  textAlign: "center",
+  },
+
 });
