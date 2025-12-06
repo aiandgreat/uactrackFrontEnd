@@ -1,12 +1,23 @@
-import { View, Text, StyleSheet, Pressable, Button } from "react-native";
+import { View, Text, StyleSheet, Pressable, TouchableOpacity, Platform } from "react-native";
 import { Linking } from "react-native";
-import { Platform } from "react-native";
 
 import { useState } from "react";
 import axios from "axios";
 
 import { colors } from "../../../styles/colors";
 import { useNavigation } from "@react-navigation/native";
+
+// --- GLASS THEME COLORS (Matching Dashboard & Admin Page) ---
+const GLASS_THEME = {
+  glassSurface: "rgba(255, 255, 255, 0.85)", // More opaque for readability
+  glassText: "#001e66", // Dark text on light glass (matching AdminDashboard)
+  secondaryText: "rgba(0, 30, 102, 0.7)", // Semi-transparent dark text
+  tertiaryText: "rgba(0, 30, 102, 0.5)", // Light dark text
+  glassBorder: "rgba(0, 30, 102, 0.3)", // Dark blue border
+  darkBlue: "#005BCC",
+  lightBlue: "#007AFF",
+  white: "#FFFFFF",
+};
 
 export default function Card({
   id,
@@ -95,7 +106,8 @@ export default function Card({
             <Text style={styles.cardBodyText}>
               Overall Status: {statusOverall}
             </Text>
-            <Button
+            <TouchableOpacity
+              style={styles.editButton}
               onPress={() =>
                 navigation.navigate("EditForm", {
                   id: id,
@@ -106,8 +118,8 @@ export default function Card({
                 })
               }
             >
-              Test Button
-            </Button>
+              <Text style={styles.editButtonText}>Edit Form</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <View style={styles.cardBody}>
@@ -129,20 +141,26 @@ export default function Card({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
-    padding: 16,
-    width: 350,
-    borderRadius: 8,
+    backgroundColor: GLASS_THEME.glassSurface,
+    padding: 20,
+    width: Platform.OS === 'web' ? '90%' : 350,
+    maxWidth: Platform.OS === 'web' ? 600 : 350,
+    minWidth: Platform.OS === 'web' ? 400 : 350,
+    borderRadius: 20,
     marginBottom: 32,
     marginLeft: "auto",
     marginRight: "auto",
-    shadowColor: "#000",
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+    ...(Platform.OS === 'web' && { backdropFilter: 'blur(10px)' }),
+    shadowColor: GLASS_THEME.darkBlue,
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 10,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 12,
   },
   cardHeader: {
     display: "flex",
@@ -151,13 +169,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: Platform.OS === 'web' ? 20 : 18,
     fontWeight: "bold",
-    color: colors.primary,
+    color: GLASS_THEME.glassText,
   },
   cardOrg: {
-    fontSize: 14,
-    color: colors.secondary,
+    fontSize: Platform.OS === 'web' ? 16 : 14,
+    color: GLASS_THEME.secondaryText,
     fontStyle: "italic",
     fontWeight: "600",
   },
@@ -168,17 +186,40 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   cardBodyText: {
-    fontSize: 16,
-    color: colors.primary,
+    fontSize: Platform.OS === 'web' ? 17 : 16,
+    color: GLASS_THEME.glassText,
+    marginBottom: 8,
   },
   cardFooter: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    borderTopWidth: 1,
+    borderTopColor: GLASS_THEME.glassBorder,
+    paddingTop: 12,
   },
   cardFooterText: {
-    fontSize: 12,
+    fontSize: Platform.OS === 'web' ? 13 : 12,
     fontStyle: "italic",
-    color: colors.secondary,
+    color: GLASS_THEME.tertiaryText,
+  },
+  editButton: {
+    marginTop: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: "#ffd800",
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: GLASS_THEME.lightBlue,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  editButtonText: {
+    color: "#001e66",
+    fontSize: 16,
+    fontWeight: "700",
   },
 });

@@ -6,6 +6,7 @@ import {
   Pressable,
   TouchableOpacity,
   StyleSheet,
+  Platform,
 } from "react-native";
 
 import { useEffect, useState } from "react";
@@ -15,6 +16,16 @@ import { colors } from "../../../styles/colors";
 import Card from "./Card";
 import { Picker } from "react-native-web";
 import { useMemo } from "react";
+
+// --- GLASS THEME COLORS ---
+const GLASS_THEME = {
+  glassSurface: "rgba(255, 255, 255, 0.85)", // More opaque for readability
+  glassText: "#001e66", // Dark text on light glass
+  glassBorder: "rgba(0, 30, 102, 0.3)", // Dark blue border
+  darkBlue: "#005BCC",
+  lightBlue: "#007AFF",
+  white: "#FFFFFF",
+};
 
 export default function AdminDashboardPage({ navigation }) {
   const [data, setData] = useState({ data: [] });
@@ -216,29 +227,30 @@ export default function AdminDashboardPage({ navigation }) {
 
   return (
     <View style={{ padding: 12 }}>
-      {/* Date Added filter dropdown and custom input */}
-      <View style={styles.dateAddedFilterRow}>
-        <Picker
-          selectedValue={dateAddedFilter}
-          style={styles.dateAddedPicker}
-          onValueChange={setDateAddedFilter}
-        >
-          <Picker.Item label="All" value="All" />
-          <Picker.Item label="Today" value="Today" />
-          <Picker.Item label="This Week" value="ThisWeek" />
-          <Picker.Item label="This Month" value="ThisMonth" />
-          <Picker.Item label="Custom" value="Custom" />
-        </Picker>
-        {dateAddedFilter === "Custom" && (
-          <TextInput
-            placeholder="YYYY-MM-DD"
-            value={customDateAdded}
-            onChangeText={setCustomDateAdded}
-            style={styles.dateInputSmall}
-          />
-        )}
-      </View>
-      <View style={styles.controlsRow}>
+      {/* Single Row: Date Added filter, Organization, and Sort dropdown */}
+      <View style={styles.singleFilterRow}>
+        <View style={styles.dateFilterWrapper}>
+          <Picker
+            selectedValue={dateAddedFilter}
+            style={styles.dateAddedPicker}
+            onValueChange={setDateAddedFilter}
+          >
+            <Picker.Item label="All" value="All" />
+            <Picker.Item label="Today" value="Today" />
+            <Picker.Item label="This Week" value="ThisWeek" />
+            <Picker.Item label="This Month" value="ThisMonth" />
+            <Picker.Item label="Custom" value="Custom" />
+          </Picker>
+          {dateAddedFilter === "Custom" && (
+            <TextInput
+              placeholder="YYYY-MM-DD"
+              value={customDateAdded}
+              onChangeText={setCustomDateAdded}
+              style={styles.dateInputSmall}
+            />
+          )}
+        </View>
+
         <Picker
           selectedValue={selectedOrg}
           style={styles.orgPicker}
@@ -284,7 +296,10 @@ export default function AdminDashboardPage({ navigation }) {
           <Picker.Item label="Name" value="name" />
           <Picker.Item label="ID" value="id" />
         </Picker>
+      </View>
 
+      {/* Order Button Row */}
+      <View style={styles.orderButtonRow}>
         <TouchableOpacity
           style={styles.orderButton}
           onPress={() => setSortOrder((s) => (s === "asc" ? "desc" : "asc"))}
@@ -326,7 +341,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     fontWeight: 600,
-
     color: colors.primary,
   },
   subtext: {
@@ -353,50 +367,151 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 12,
-    gap: 8,
+    gap: 12,
+    padding: 16,
+    backgroundColor: "#f8faff",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#e0e8ff",
+  },
+  singleFilterRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+    gap: 12,
+    padding: 16,
+    backgroundColor: GLASS_THEME.glassSurface,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: GLASS_THEME.glassBorder,
+    ...(Platform.OS === 'web' && { backdropFilter: 'blur(10px)' }),
+    shadowColor: GLASS_THEME.darkBlue,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+  orderButtonRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 12,
+    padding: 16,
+    backgroundColor: GLASS_THEME.glassSurface,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: GLASS_THEME.glassBorder,
+    ...(Platform.OS === 'web' && { backdropFilter: 'blur(10px)' }),
+    shadowColor: GLASS_THEME.darkBlue,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  dateFilterWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    flex: 1,
+    minWidth: 200,
   },
   searchInput: {
     flex: 1,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: colors.primary,
-    borderRadius: 6,
+    padding: 12,
+    borderWidth: 2,
+    borderColor: "#001e66",
+    borderRadius: 10,
     marginRight: 8,
+    fontSize: 14,
+    backgroundColor: "#fff",
   },
   picker: {
-    width: 140,
-    marginRight: 8,
+    flex: 1,
+    minWidth: 120,
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+    borderRadius: 12,
+    backgroundColor: GLASS_THEME.glassSurface,
+    height: 50,
+    color: GLASS_THEME.glassText,
+    paddingHorizontal: 12,
+    ...(Platform.OS === 'web' && { backdropFilter: 'blur(5px)' }),
   },
   orgPicker: {
-    width: 180,
-    marginRight: 8,
+    flex: 1,
+    minWidth: 120,
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+    borderRadius: 12,
+    backgroundColor: GLASS_THEME.glassSurface,
+    height: 50,
+    color: GLASS_THEME.glassText,
+    paddingHorizontal: 12,
+    ...(Platform.OS === 'web' && { backdropFilter: 'blur(5px)' }),
   },
   dateAddedFilterRow: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 12,
-    gap: 8,
+    gap: 12,
+    padding: 16,
+    backgroundColor: GLASS_THEME.glassSurface,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: GLASS_THEME.glassBorder,
+    ...(Platform.OS === 'web' && { backdropFilter: 'blur(10px)' }),
+    shadowColor: GLASS_THEME.darkBlue,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
   },
   dateAddedPicker: {
-    width: 160,
-    marginRight: 8,
+    flex: 1,
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+    borderRadius: 12,
+    backgroundColor: GLASS_THEME.glassSurface,
+    height: 50,
+    color: GLASS_THEME.glassText,
+    paddingHorizontal: 12,
+    ...(Platform.OS === 'web' && { backdropFilter: 'blur(5px)' }),
   },
   dateInputSmall: {
-    padding: 6,
-    borderWidth: 1,
-    borderColor: colors.primary,
-    borderRadius: 6,
-    marginRight: 8,
+    padding: 12,
+    borderWidth: 2,
+    borderColor: GLASS_THEME.glassBorder,
+    borderRadius: 12,
     minWidth: 120,
+    fontSize: 14,
+    backgroundColor: GLASS_THEME.glassSurface,
+    color: GLASS_THEME.glassText,
+    flex: 1,
+    height: 50,
+    ...(Platform.OS === 'web' && { backdropFilter: 'blur(5px)' }),
   },
   orderButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: colors.primary,
-    borderRadius: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: GLASS_THEME.lightBlue,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    minWidth: 100,
+    height: 50,
+    flex: 1,
+    shadowColor: GLASS_THEME.lightBlue,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
   },
   orderButtonText: {
-    color: colors.onPrimary || "#fff",
-    fontWeight: "600",
+    color: GLASS_THEME.white,
+    fontWeight: "700",
+    fontSize: 14,
   },
 });
+

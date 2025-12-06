@@ -1,103 +1,86 @@
 import {
   View,
   Text,
-  TextInput,
-  Button,
-  Pressable,
-  TouchableOpacity,
-  StyleSheet,
   ScrollView,
+  StyleSheet,
+  Pressable,
   StatusBar,
+  Platform, // Added Platform for RN-web style fixes
 } from "react-native";
-import NavBar from "../componentsFolder/NavBar";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { useState, useEffect } from "react";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import NavBar from "../componentsFolder/NavBar";
 import StudentDashboardPage from "./components/StudentDashboard";
 import AdminDashboardPage from "./components/AdminDashboard";
-import { colors } from "../../styles/colors"; // Moved the colors import up
+
+// --- THEME COLORS ---
+const THEME_COLORS = {
+  softGray: "#E0E5F2", // Background
+  glassBlue: "#007AFF", // Primary Blue for CTA
+  darkBlue: "#005BCC", // Darker blue for contrast
+  glassSurface: "rgba(255, 255, 255, 0.2)", // Transparent white for glass cards
+  glassBorder: "rgba(255, 255, 255, 0.4)", // White border for glass edge
+  headerBackground: "rgba(0, 122, 255, 0.8)", // Semi-transparent Blue for header
+  white: "#FFFFFF",
+};
+// --------------------
 
 export default function DashboardPage({ navigation }) {
-  // sample user role logic
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const fetchRole = await AsyncStorage.getItem("role");
-      const fetchName = await AsyncStorage.getItem("name");
-      setName(fetchName);
-      setRole(fetchRole);
+      setName(await AsyncStorage.getItem("name"));
+      setRole(await AsyncStorage.getItem("role"));
     };
     fetchUserData();
   }, []);
 
   return (
     <View style={styles.container}>
-      {/* 🚨 FIX: Wrap NavBar in a View with high zIndex and position: 'relative' */}
+      {/* Navbar */}
       <View style={styles.navContainer}>
-        {/* You need to pass navigation to NavBar for the menu items to work */}
         <NavBar navigation={navigation} />
       </View>
 
-      {/* The welcome message View should not have a high zIndex */}
       <SafeAreaProvider>
-        <SafeAreaView style={styles.container} edges={["top"]}>
-          <ScrollView style={styles.scrollView}>
-            <View style={{ margin: 24 }}>
-              <Text style={[styles.text, { color: colors.primary }]}>
-                Welcome, {name}
+        <SafeAreaView style={styles.safe} edges={["top"]}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {/* Glassy Blue Header */}
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>Welcome,</Text>
+              <Text style={styles.headerName}>{name}</Text>
+
+              <View style={styles.headerCircle1} />
+              <View style={styles.headerCircle2} />
+              <View style={styles.headerOverlay} /> {/* Added a subtle overlay for the 'frost' effect */}
+            </View>
+
+            {/* Glassy Quick Card */}
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Submit Forms</Text>
+              <Text style={styles.cardDesc}>
+                Easily send your school-related forms anytime.
               </Text>
+
+              <Pressable
+                onPress={() => navigation.navigate("AddForm")}
+                style={({ pressed }) => [
+                  styles.button,
+                  { opacity: pressed ? 0.7 : 1 },
+                ]}
+              >
+                <View>
+                  <Text style={styles.buttonText}>Submit a Form</Text>
+                </View>
+              </Pressable>
             </View>
 
-            <View style={styles.container2}>
-              <View style={{ display: "flex", maxWidth: 200 }}>
-                <Text
-                  style={{
-                    fontSize: 20,
-                    fontWeight: 600,
-                    color: colors.lightText,
-                  }}
-                >
-                  Form Submission:
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontStyle: "italic",
-                    color: colors.lightText,
-                    marginVertical: 15,
-                  }}
-                >
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </Text>
-                <Pressable onPress={() => navigation.navigate("AddForm")}>
-                  <View style={styles.button}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        fontWeight: 500,
-                        color: colors.primary,
-                      }}
-                    >
-                      Submit a Form
-                    </Text>
-                  </View>
-                </Pressable>
-              </View>
-              <View
-                style={{
-                  width: 100,
-                  borderRadius: 10,
-                  backgroundColor: "rgba(78, 88, 216, 1)",
-                }}
-              ></View>
-            </View>
-
+            {/* Role-Based Dashboard */}
             {role === "admin" ? (
               <AdminDashboardPage navigation={navigation} />
             ) : (
@@ -110,51 +93,137 @@ export default function DashboardPage({ navigation }) {
   );
 }
 
+/* ==========================
+      STYLES (Glassmorphism)
+========================== */
 const styles = StyleSheet.create({
   container: {
-    // Changing '100vh' to '100%' for better cross-platform support
-    height: "100%",
-    flex: 1, // Add flex: 1 for RN best practices
-    backgroundColor: colors.surface,
+    flex: 1,
+    backgroundColor: THEME_COLORS.softGray, // Soft background
   },
-  // 🚨 NEW STYLE RULE FOR Z-INDEX FIX 🚨
+
   navContainer: {
-    // This is the key: establishes a stacking context with high priority
-    position: "relative", // CRITICAL for RN Web to activate zIndex properly
+    position: "relative",
     zIndex: 1000,
   },
-  text: {
-    fontSize: 24,
-    fontWeight: "600",
-  },
-  scrollContainer: {
+
+  safe: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
-  button: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    backgroundColor: colors.surface,
-    marginHorizontal: 24,
-    padding: 4,
-    borderRadius: 5,
-  },
-  container2: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginHorizontal: 24,
-    marginVertical: 14,
-    backgroundColor: "#4a86dfff",
-    borderRadius: 10,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 4,
-      height: 4,
-    },
+
+  /* HEADER (Blue Glass Effect) */
+  header: {
+    height: 180, 
+    width: "100%",
+    paddingHorizontal: 24,
+    paddingTop: 40, 
+    backgroundColor: THEME_COLORS.headerBackground, // Semi-transparent Blue
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    overflow: "hidden",
+    // Fallback for Web/RN-web: added this for visual cue
+    ...(Platform.OS === 'web' && { backdropFilter: 'blur(15px)' }),
+    shadowColor: THEME_COLORS.darkBlue,
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
+    elevation: 10,
+  },
+
+  // Subtle frost effect inside the header
+  headerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    zIndex: 0,
+  },
+
+  headerTitle: {
+    fontSize: 18,
+    color: THEME_COLORS.white,
+    fontWeight: "800",
+    zIndex: 1, // Ensure text is above overlay
+  },
+
+  headerName: {
+    fontSize: 34, 
+    fontWeight: "800",
+    color: THEME_COLORS.white,
+    marginTop: 8,
+    zIndex: 1,
+  },
+
+  /* Background Circle Decorations */
+  headerCircle1: {
+    position: "absolute",
+    top: -40,
+    right: -50,
+    height: 150,
+    width: 150,
+    borderRadius: 75,
+    backgroundColor: "rgba(255,255,255,0.1)", // Very light transparency
+  },
+
+  headerCircle2: {
+    position: "absolute",
+    bottom: -60,
+    left: -60,
+    height: 180,
+    width: 180,
+    borderRadius: 90,
+    backgroundColor: "rgba(255,255,255,0.12)",
+  },
+
+  /* GLASS CARD */
+  card: {
+    backgroundColor: THEME_COLORS.glassSurface, // Transparent white for glass effect
+    padding: 24,
+    marginHorizontal: 24,
+    marginTop: -60, // Pulled up to overlap the header
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: THEME_COLORS.glassBorder, // Subtle white border
+    // Drop shadow for the floating effect
+    shadowColor: THEME_COLORS.darkBlue,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 12,
+    ...(Platform.OS === 'web' && { backdropFilter: 'blur(10px)' }),
+    zIndex: 5, // Keep card above content below
+  },
+
+  cardTitle: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "white", // Dark text on light glass
+    marginBottom: 4,
+  },
+
+  cardDesc: {
+    fontSize: 15,
+    color: THEME_COLORS.darkBlue,
+    marginTop: 8,
+    marginBottom: 20,
+    opacity: 0.7,
+  },
+
+  /* BUTTON (Solid Blue CTA) */
+  button: {
+    backgroundColor: THEME_COLORS.glassBlue, // Solid Primary Blue
+    paddingVertical: 14,
+    borderRadius: 15,
+    alignItems: "center",
+    shadowColor: THEME_COLORS.glassBlue,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+
+  buttonText: {
+    color: THEME_COLORS.white,
+    fontSize: 17,
+    fontWeight: "700",
   },
 });

@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Pressable,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { useState } from "react";
 // 👈 ADDED: Import AsyncStorage for persistent storage in React Native
@@ -87,11 +88,11 @@ export default function NavBar({ navigation }) {
   return (
     <View>
       <View style={stylesNav.navBar}>
-        {/* Title/Subtitle Section */}
-        <View>
-          <Text style={stylesNav.navBarTitle}>UATrackify</Text>
-          <Text style={stylesNav.navBarSubtitle}>Form Tracker</Text>
-        </View>
+        {/* Logo Section */}
+        <Image
+          source={require("../../assets/logo.png")}
+          style={stylesNav.logo}
+        />
 
         {/* Menu Icon Section */}
         <Pressable onPress={toggleMenu} style={stylesNav.menuIconContainer}>
@@ -131,6 +132,12 @@ const stylesNav = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     zIndex: 10,
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    resizeMode: "contain",
+    marginRight: 0,
   },
   navBarTitle: {
     fontSize: 20,
