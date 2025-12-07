@@ -43,6 +43,11 @@ export default function Card({
   // If you want to show the name without extension, uncomment below:
   let documentNameOnly = documentName.split(".").shift();
 
+  if (documentNameOnly.length >= 8) {
+    documentNameOnly = documentNameOnly.slice(0, 8);
+    documentNameOnly += "...";
+  }
+
   const statusColor = [
     statusOverall == "Pending"
       ? { color: "#9c7815ff" }
