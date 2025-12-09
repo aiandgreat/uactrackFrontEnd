@@ -7,4 +7,4 @@ Snack LIVE URL:
 https://snack.expo.dev/@bernburn/uatrackify?platform=web
 
 Render LIVE URL:
-https://uatrackifybackend.onrender.com/
+https://uatrackifybackend.onrender.com/admin/
