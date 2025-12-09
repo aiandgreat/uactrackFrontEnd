@@ -288,35 +288,7 @@ export default function AddForm({ navigation }) {
               </TouchableOpacity>
             </View>
           )}
-          {/* File Picker Section */}
-          <View style={styles.filePickerSection}>
-            {Platform.OS === "web" ? (
-              <View style={styles.webFileInputContainer}>
-                <Text style={styles.statusLabel}>Attach Document:</Text>
-                <input
-                  type="file"
-                  onChange={handleWebFileChange}
-                  style={{ display: "block", padding: "10px 0" }}
-                />
-              </View>
-            ) : (
-              // Placeholder for native file selection (needs react-native-document-picker)
-              <View>
-                <Button
-                  title="Select Document (Mobile)"
-                  onPress={() => alert("Use DocumentPicker for Mobile")}
-                />
-              </View>
-            )}
-
-            {fileName ? (
-              <Text style={styles.fileNameText}>
-                File selected: **{fileName}**
-              </Text>
-            ) : (
-              <Text style={styles.fileNameText}>No file selected.</Text>
-            )}
-          </View>
+          
 
           {/* Conditional fields for admin and office */}
           {role === "admin" && office === "OSA" && (
@@ -414,7 +386,7 @@ export default function AddForm({ navigation }) {
             </>
           )}
           {/* For non-admins or other offices, show Remarks only */}
-          {!(role === "admin" && office === "VPA") && (
+          { role === "admin" && office === "VPA" && (
             <TextInput
               style={styles.input}
               placeholder="Remarks (Optional)"
@@ -427,8 +399,8 @@ export default function AddForm({ navigation }) {
           {errorMessage ? (
             <Text style={styles.errorText}>{errorMessage}</Text>
           ) : null}
-
-          {/* Submit Button Section */}
+        </View>
+        {/* Submit Button Section */}
           <View style={styles.submitButtonContainer}>
             <TouchableOpacity
               style={[styles.button, styles.primaryButton]}
@@ -445,7 +417,6 @@ export default function AddForm({ navigation }) {
               <Text style={styles.buttonText}>Go Back</Text>
             </TouchableOpacity>
           </View>
-        </View>
       </View>
     </ScrollView>
   );
@@ -517,7 +488,7 @@ const styles = StyleSheet.create({
   },
   statusLabel: {
     fontWeight: "700",
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 10,
     color: GLASS_THEME.glassText,
     fontSize: 16,
@@ -550,7 +521,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   webFileInputContainer: {
-    height: 50,
     justifyContent: "center",
   },
   buttonContainer: {
